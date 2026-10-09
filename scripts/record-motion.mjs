@@ -27,7 +27,7 @@ export function applyRecordMotion(source) {
     '  gl_PointSize=clamp(aSize*.95+live*uLevel*.15+glint*twinkle*.35,.65,1.50)*uPixelRatio;');
   source = replaceOnce(source,
     'colorFor(vPart)*vBrightness*fieldGain',
-    'mix(colorFor(vPart),vec3(1.0,.78,.30),vGold)*vBrightness*fieldGain');
+    'mix(colorFor(vPart),vec3(1.0,.78,.30),vGold)*vBrightness*fieldGain*(1.0+.25*vGold)');
   source = replaceOnce(source,
     '  float rotationCos=cos(uRotation),rotationSin=sin(uRotation);',
     `  // Lift the glow above the vinyl and let individual points gently wander.
