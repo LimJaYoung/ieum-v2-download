@@ -38,4 +38,18 @@ python -m http.server 8000 --directory ieum-v2-download
 
 `download-ieum.ps1`은 원본 사이트에서 연결된 공개 파일을 수집합니다. 이미 저장된 파일은 유지하고, 누락된 파일을 다운로드하며 `download-manifest.json`을 기록합니다.
 
-이 저장소에는 자동 배포 워크플로를 설정하지 않았습니다. Vercel 프로젝트 연결이나 배포는 수행하지 않았습니다.
+## GitHub Pages 배포
+
+배포 예정 주소: <https://limjayoung.github.io/ieum-v2-download/#home>
+
+`scripts/build-pages.mjs`는 보관된 원본 46개 파일의 SHA-256과 크기를 검증한 뒤 `dist/`에 배포본을 생성합니다. GitHub Pages 하위 경로에 맞춰 JavaScript·CSS·이미지·음원·manifest 경로와 웹 앱 시작 주소를 조정합니다. `ieum-v2-download/`의 원본 바이트는 변경하지 않습니다.
+
+```sh
+node scripts/build-pages.mjs
+```
+
+GitHub의 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 설정하면, `main`의 배포 관련 파일 변경 또는 **Actions → Deploy IEUM to GitHub Pages → Run workflow**로 배포합니다. `.github/workflows/pages.yml`은 검증된 `dist/`만 공개하며 다운로드 기록·안내·관리 파일은 사이트에 올리지 않습니다.
+
+현재 계정에서는 비공개 저장소의 Pages가 제한되어 있어, 실제 배포하려면 저장소 공개 전환 또는 비공개 Pages를 지원하는 GitHub 요금제가 필요합니다. 설정 완료 전 위 주소는 배포 완료를 의미하지 않습니다.
+
+Vercel 프로젝트 연결이나 배포는 수행하지 않았습니다.
