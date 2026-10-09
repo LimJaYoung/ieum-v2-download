@@ -7,13 +7,16 @@ function replaceOnce(source, before, after) {
 }
 
 export function applyRecordMotion(source) {
-  source = replaceOnce(source, 'uniform float uFlowTime;', 'uniform float uFlowTime;\nuniform mediump float uPointMode;');
+  source = replaceOnce(source, 'uniform float uFlowTime;', 'uniform float uFlowTime;\nuniform mediump float uPointMode;\nvarying mediump float vGold;');
+  source = replaceOnce(source, 'uniform float uPointMode;', 'uniform float uPointMode;\nvarying mediump float vGold;');
   source = replaceOnce(source,
     '  vAlpha=aAlpha*(.48+focus*1.48)*hubFade*rimFade*(.96+.04*sin(uTime*1.256637));',
     `  // Each grain has its own phase and height; the field never spins with the disc.
   float floatPhase=aT*37.7+aPhase*3.1+aNormal*83.+aMicro*5.;
   float twinkle=pow(.5+.5*sin(uTime*(.85+aMicro*.30)+floatPhase),4.);
   float glint=step(1.38,aBrightness)*uPointMode;
+  // Give a stable quarter of the fine grains a warm yellow tint.
+  vGold=step(.75,fract(sin(aT*127.1+aNormal*311.7+aPhase*74.7)*43758.5453))*uPointMode;
   vAlpha=aAlpha*(.48+focus*1.48)*hubFade*rimFade
     *mix(.22,.34+twinkle*.58,uPointMode);`);
   source = replaceOnce(source,
@@ -22,6 +25,9 @@ export function applyRecordMotion(source) {
   source = replaceOnce(source,
     '  gl_PointSize=(aSize*1.35+live*uLevel*0.45)*uPixelRatio;',
     '  gl_PointSize=clamp(aSize*.95+live*uLevel*.15+glint*twinkle*.35,.65,1.50)*uPixelRatio;');
+  source = replaceOnce(source,
+    'colorFor(vPart)*vBrightness*fieldGain',
+    'mix(colorFor(vPart),vec3(1.0,.78,.30),vGold)*vBrightness*fieldGain');
   source = replaceOnce(source,
     '  float rotationCos=cos(uRotation),rotationSin=sin(uRotation);',
     `  // Lift the glow above the vinyl and let individual points gently wander.
