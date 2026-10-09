@@ -12,8 +12,8 @@ export function applyRecordMotion(source) {
   source = replaceOnce(source,
     'a.clearRect(0,0,i,i),a.save(),a.beginPath(),a.arc(o,o,s,0,Math.PI*2)',
     'a.clearRect(0,0,i,i),a.save(),a.translate(o,o),a.rotate(t),a.translate(-o,-o),a.beginPath(),a.arc(o,o,s,0,Math.PI*2)');
-  source = replaceOnce(source, 'uniform float uFlowTime;', 'uniform float uFlowTime;\nuniform mediump float uPointMode;\nvarying mediump float vGold;');
-  source = replaceOnce(source, 'uniform float uPointMode;', 'uniform float uPointMode;\nvarying mediump float vGold;');
+  source = replaceOnce(source, 'uniform float uFlowTime;', 'uniform float uFlowTime;\nuniform mediump float uPointMode;\nuniform float uRecordScale;\nvarying mediump float vPointCoverage;\nvarying mediump float vGold;');
+  source = replaceOnce(source, 'uniform float uPointMode;', 'uniform float uPointMode;\nvarying mediump float vPointCoverage;\nvarying mediump float vGold;');
   source = replaceOnce(source,
     '  vAlpha=aAlpha*(.48+focus*1.48)*hubFade*rimFade*(.96+.04*sin(uTime*1.256637));',
     `  // Each grain has its own phase and height; the field never spins with the disc.
@@ -23,13 +23,26 @@ export function applyRecordMotion(source) {
   // Give a stable quarter of the fine grains a warm yellow tint.
   vGold=step(.75,fract(sin(aT*127.1+aNormal*311.7+aPhase*74.7)*43758.5453))*uPointMode;
   vAlpha=aAlpha*(.48+focus*1.48)*hubFade*rimFade
-    *mix(.22,.34+twinkle*.58,uPointMode);`);
+    *mix(.22,.34+twinkle*.58,uPointMode)
+    *mix(min(uRecordScale,1.),1.,uPointMode);`);
   source = replaceOnce(source,
     '  vBrightness=aBrightness*(1.35+focus*1.18)*(1.0+live*uLevel*0.28);',
     '  vBrightness=aBrightness*(1.10+focus*.60)*(1.0+live*uLevel*.15);');
   source = replaceOnce(source,
     '  gl_PointSize=(aSize*1.35+live*uLevel*0.45)*uPixelRatio;',
-    '  gl_PointSize=clamp(aSize*.95+live*uLevel*.15+glint*twinkle*.35,.65,1.50)*uPixelRatio;');
+    `  // Scale every record against the approved 300px home vinyl.
+  float pointSize=clamp(aSize*.95+live*uLevel*.15+glint*twinkle*.35,.65,1.50)*uPixelRatio*uRecordScale;
+  gl_PointSize=max(1.,pointSize);
+  // WebGL rasterizes at least one pixel: fade subpixel grains by their area.
+  vPointCoverage=min(1.,pointSize*pointSize);`);
+  source = replaceOnce(source, '  float alpha=vAlpha;',
+    '  float alpha=vAlpha*mix(1.,vPointCoverage,uPointMode);');
+  source = replaceOnce(source,
+    'S=u.getUniformLocation(d,`uPixelRatio`),C=',
+    'S=u.getUniformLocation(d,`uPixelRatio`),recordScaleUniform=u.getUniformLocation(d,`uRecordScale`),C=');
+  source = replaceOnce(source,
+    'u.uniform1f(S,Math.min(window.devicePixelRatio||1,2))',
+    'u.uniform1f(S,Math.min(window.devicePixelRatio||1,2)),u.uniform1f(recordScaleUniform,t.clientWidth/300),e.dataset.particleScale=String(t.clientWidth/300)');
   source = replaceOnce(source,
     'colorFor(vPart)*vBrightness*fieldGain',
     'mix(colorFor(vPart),vec3(1.0,.78,.30),vGold)*vBrightness*fieldGain*(1.0+.25*vGold)');
