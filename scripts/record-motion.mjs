@@ -7,6 +7,11 @@ function replaceOnce(source, before, after) {
 }
 
 export function applyRecordMotion(source) {
+  // The material renderer accepted the turntable angle but never applied it.
+  // Rotate only its drawing context; the floating particle canvas stays separate.
+  source = replaceOnce(source,
+    'a.clearRect(0,0,i,i),a.save(),a.beginPath(),a.arc(o,o,s,0,Math.PI*2)',
+    'a.clearRect(0,0,i,i),a.save(),a.translate(o,o),a.rotate(t),a.translate(-o,-o),a.beginPath(),a.arc(o,o,s,0,Math.PI*2)');
   source = replaceOnce(source, 'uniform float uFlowTime;', 'uniform float uFlowTime;\nuniform mediump float uPointMode;\nvarying mediump float vGold;');
   source = replaceOnce(source, 'uniform float uPointMode;', 'uniform float uPointMode;\nvarying mediump float vGold;');
   source = replaceOnce(source,
@@ -38,7 +43,7 @@ export function applyRecordMotion(source) {
   float rotationCos=cos(uRotation),rotationSin=sin(uRotation);`);
   source = replaceOnce(source, 'u.uniform1f(v,N)', 'u.uniform1f(v,0)');
   source = replaceOnce(source, 'e.dataset.rotation=String(N)',
-    'e.dataset.rotation=`0`,e.dataset.motion=`floating-twinkle`,e.dataset.motionTime=String(s?0:A)');
+    't.dataset.rotation=String(N),e.dataset.rotation=`0`,e.dataset.motion=`floating-twinkle`,e.dataset.motionTime=String(s?0:A)');
   return source;
 }
 
