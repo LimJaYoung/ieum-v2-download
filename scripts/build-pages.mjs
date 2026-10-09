@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { applyRecordLayout, applyRecordMotion } from './record-motion.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const source = path.join(root, 'ieum-v2-download');
@@ -29,8 +30,10 @@ const files = await Promise.all(manifest.files.map(async (entry) => {
     content = bytes.toString('utf8').replace(assetReference, (_, quote, resource) => `${quote}${base}${resource}`);
     if (entry.path.endsWith('.js')) {
       content = content.replaceAll('https://ieum-v2-react.vercel.app', siteUrl.replace(/\/$/, ''));
+      content = applyRecordMotion(content);
     }
     if (entry.path.endsWith('.css')) {
+      content = applyRecordLayout(content);
       // Edit the existing all-width heading rule without adding another override.
       content = content.replace('.home-intro h1{font-size:42px}', '.home-intro h1{font-size:34px;margin-bottom:8px}');
       // Add 15px to the description's existing 14px bottom margin.
@@ -53,11 +56,11 @@ const files = await Promise.all(manifest.files.map(async (entry) => {
   return { name: entry.path, content };
 }));
 
-// Give the changed stylesheet a fresh URL so existing visitors receive the fix.
-for (const file of files.filter((file) => file.name.endsWith('.css'))) {
+// Give changed styles and animation code fresh URLs for existing visitors.
+for (const file of files.filter((file) => /\.(css|js)$/.test(file.name))) {
   const oldName = file.name;
   const digest = createHash('sha256').update(file.content).digest('hex').slice(0, 12);
-  file.name = `assets/index-${digest}.css`;
+  file.name = `assets/index-${digest}${path.extname(oldName)}`;
   for (const reference of files.filter((file) => typeof file.content === 'string')) {
     reference.content = reference.content.replaceAll(`${base}${oldName}`, `${base}${file.name}`);
   }
