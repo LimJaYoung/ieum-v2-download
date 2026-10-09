@@ -31,6 +31,8 @@ const files = await Promise.all(manifest.files.map(async (entry) => {
       content = content.replaceAll('https://ieum-v2-react.vercel.app', siteUrl.replace(/\/$/, ''));
     }
     if (entry.path.endsWith('.css')) {
+      // Edit the existing all-width heading rule without adding another override.
+      content = content.replace('.home-intro h1{font-size:42px}', '.home-intro h1{font-size:36px}');
       // Use one scrollbar policy for the page, app panels, and dialogs.
       // Only hide the browser's scrollbars; keep overflow and input behavior intact.
       content = content
