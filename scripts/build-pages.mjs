@@ -30,6 +30,15 @@ const files = await Promise.all(manifest.files.map(async (entry) => {
     if (entry.path.endsWith('.js')) {
       content = content.replaceAll('https://ieum-v2-react.vercel.app', siteUrl.replace(/\/$/, ''));
     }
+    if (entry.path.endsWith('.css')) {
+      // Use one scrollbar policy for the page, app panels, and dialogs.
+      // Only hide the browser's scrollbars; keep overflow and input behavior intact.
+      content = content
+        .replace(/(?:scrollbar-width|scrollbar-color|-ms-overflow-style):[^;}]+;?/g, '')
+        .replace(/[^{}]+::-webkit-scrollbar(?:-[a-z-]+)?\{[^{}]*\}/g, '')
+        .replace(/[^{}]+\{\}/g, '');
+      content = '*{scrollbar-width:none;-ms-overflow-style:none}*::-webkit-scrollbar{display:none;width:0;height:0}' + content;
+    }
     if (entry.path === 'manifest.webmanifest') {
       const webmanifest = JSON.parse(content);
       webmanifest.start_url = `${base}#home`;
@@ -39,6 +48,16 @@ const files = await Promise.all(manifest.files.map(async (entry) => {
   }
   return { name: entry.path, content };
 }));
+
+// Give the changed stylesheet a fresh URL so existing visitors receive the fix.
+for (const file of files.filter((file) => file.name.endsWith('.css'))) {
+  const oldName = file.name;
+  const digest = createHash('sha256').update(file.content).digest('hex').slice(0, 12);
+  file.name = `assets/index-${digest}.css`;
+  for (const reference of files.filter((file) => typeof file.content === 'string')) {
+    reference.content = reference.content.replaceAll(`${base}${oldName}`, `${base}${file.name}`);
+  }
+}
 
 // The only directory this build may replace is this repository's generated dist.
 if (output !== path.join(root, 'dist') || path.dirname(output) !== path.resolve(root)) {
