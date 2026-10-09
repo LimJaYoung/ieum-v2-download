@@ -40,7 +40,7 @@ python -m http.server 8000 --directory ieum-v2-download
 
 ## GitHub Pages 배포
 
-배포 예정 주소: <https://limjayoung.github.io/ieum-v2-download/#home>
+공개 사이트: <https://limjayoung.github.io/ieum-v2-download/#home>
 
 `scripts/build-pages.mjs`는 보관된 원본 46개 파일의 SHA-256과 크기를 검증한 뒤 `dist/`에 배포본을 생성합니다. GitHub Pages 하위 경로에 맞춰 JavaScript·CSS·이미지·음원·manifest 경로와 웹 앱 시작 주소를 조정합니다. `ieum-v2-download/`의 원본 바이트는 변경하지 않습니다.
 
@@ -50,6 +50,6 @@ node scripts/build-pages.mjs
 
 GitHub의 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 설정하면, `main`의 배포 관련 파일 변경 또는 **Actions → Deploy IEUM to GitHub Pages → Run workflow**로 배포합니다. `.github/workflows/pages.yml`은 검증된 `dist/`만 공개하며 다운로드 기록·안내·관리 파일은 사이트에 올리지 않습니다.
 
-현재 계정에서는 비공개 저장소의 Pages가 제한되어 있어, 실제 배포하려면 저장소 공개 전환 또는 비공개 Pages를 지원하는 GitHub 요금제가 필요합니다. 설정 완료 전 위 주소는 배포 완료를 의미하지 않습니다.
+저장소를 공개로 전환하고 GitHub Actions를 Pages 배포 소스로 활성화했습니다. [배포 실행 기록](https://github.com/LimJaYoung/ieum-v2-download/actions/runs/37943787231)에서 결과를 확인할 수 있습니다. 공개 HTTPS 주소의 46개 파일이 HTTP 200으로 응답하고, 로컬에서 검증한 배포본과 SHA-256이 일치함을 확인했습니다.
 
 Vercel 프로젝트 연결이나 배포는 수행하지 않았습니다.
