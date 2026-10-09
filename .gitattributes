@@ -1,0 +1,8 @@
+* text=auto
+*.md text eol=lf
+*.ps1 text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Preserve downloaded bytes and recorded SHA-256 checksums.
+ieum-v2-download/** -text

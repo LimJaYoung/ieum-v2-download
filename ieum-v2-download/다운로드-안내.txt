@@ -1,0 +1,35 @@
+IEUM V2 공개 배포 자료 다운로드
+
+원본 사이트: https://ieum-v2-react.vercel.app/#home
+다운로드 일자: 2026-10-09 (한국 시간)
+
+총 46개 원본 파일 / 13,481,773바이트 (약 13.48 MB)
+
+구성
+- audio/: 샘플 및 반주 MP3 6개
+  - ai-light-v1: sample.mp3, backing.mp3
+  - ai-warm-direct-v1: sample.mp3, backing.mp3
+  - ai-rain-v1: sample.mp3, backing.mp3
+- demo-stems/: 합성 시연 음원 WAV 3개와 출처 목록 manifest.json
+  - soprano.wav, alto.wav, bass.wav
+- figma/653-46/: PNG 이미지 3개, SVG 아이콘 및 그래픽 25개
+- assets/: 배포된 JavaScript 1개, CSS 1개, 폰트 4개
+- index.html: 시작 페이지
+- manifest.webmanifest: 웹 앱 설정
+
+확인 범위
+홈·프로젝트·컬렉션·프로젝트 상세 화면을 확인하고, HTML/JavaScript/CSS/JSON/SVG에서 연결한 공개 파일을 재귀적으로 수집했습니다. 배포 파일의 경로와 내용은 원본 그대로 보존했습니다. 화면의 인라인 그래픽과 프로젝트·곡 등의 내장 데이터는 원본 JavaScript/HTML에 포함되어 있습니다.
+
+별도 안내
+- 이것은 공개된 사이트의 배포본입니다. React 개발용 원본 TSX/JSX, 저장소 이력, 서버 내부 파일은 포함되어 있지 않습니다.
+- 브라우저에 사용자가 별도로 저장한 녹음·프로필 등 개인 데이터는 포함되어 있지 않습니다.
+- demo-stems의 WAV 3개는 사이트가 합성 시연음으로 명시한 자료이며 실제 사람의 보컬 녹음이 아닙니다. 제공된 출처·라이선스 정보는 demo-stems/manifest.json에 보존했습니다.
+- index.html은 루트 기준 경로를 사용하므로 직접 더블클릭해서 여는 것보다 이 폴더를 웹 서버의 루트로 제공해야 배포 당시처럼 연결됩니다.
+
+검증
+46개 원본 파일의 SHA-256과 파일 크기를 기록하고 대조했습니다. 이미지·음원·폰트의 파일 형식, SVG/XML 및 JSON을 확인했습니다. MP3 6개의 SHA-256은 사이트 배포 코드에 포함된 예상 해시와 모두 일치했습니다.
+
+추가 기록 파일
+download-manifest.json: 파일별 원본 URL, 상대 경로, 크기, 응답 상태, SHA-256 및 다운로드 시간
+
+다운로드 실패: 0개
