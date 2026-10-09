@@ -34,6 +34,8 @@ const files = await Promise.all(manifest.files.map(async (entry) => {
     }
     if (entry.path.endsWith('.css')) {
       content = applyRecordLayout(content);
+      // Update the shared small-label rule in place.
+      content = content.replace('.kicker,.topbar-center,.top-meta,.section-head>span{font-size:12px}', '.kicker,.topbar-center,.top-meta,.section-head>span{font-size:10px}');
       // Edit the existing all-width heading rule without adding another override.
       content = content.replace('.home-intro h1{font-size:42px}', '.home-intro h1{font-size:34px;margin-bottom:8px}');
       // Add 15px to the description's existing 14px bottom margin.
