@@ -32,7 +32,7 @@ const files = await Promise.all(manifest.files.map(async (entry) => {
     }
     if (entry.path.endsWith('.css')) {
       // Edit the existing all-width heading rule without adding another override.
-      content = content.replace('.home-intro h1{font-size:42px}', '.home-intro h1{font-size:34px}');
+      content = content.replace('.home-intro h1{font-size:42px}', '.home-intro h1{font-size:34px;margin-bottom:8px}');
       // Use one scrollbar policy for the page, app panels, and dialogs.
       // Only hide the browser's scrollbars; keep overflow and input behavior intact.
       content = content
