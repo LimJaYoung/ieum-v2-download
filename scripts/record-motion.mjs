@@ -12,20 +12,23 @@ export function applyRecordMotion(source) {
     '  vAlpha=aAlpha*(.48+focus*1.48)*hubFade*rimFade*(.96+.04*sin(uTime*1.256637));',
     `  // Each grain has its own phase and height; the field never spins with the disc.
   float floatPhase=aT*37.7+aPhase*3.1+aNormal*83.+aMicro*5.;
-  float twinkle=pow(.5+.5*sin(uTime*(1.35+aMicro*.55)+floatPhase),4.);
+  float twinkle=pow(.5+.5*sin(uTime*(.85+aMicro*.30)+floatPhase),4.);
   float glint=step(1.38,aBrightness)*uPointMode;
   vAlpha=aAlpha*(.48+focus*1.48)*hubFade*rimFade
-    *mix(.42,.40+twinkle*1.65,uPointMode);`);
+    *mix(.22,.34+twinkle*.58,uPointMode);`);
+  source = replaceOnce(source,
+    '  vBrightness=aBrightness*(1.35+focus*1.18)*(1.0+live*uLevel*0.28);',
+    '  vBrightness=aBrightness*(1.10+focus*.60)*(1.0+live*uLevel*.15);');
   source = replaceOnce(source,
     '  gl_PointSize=(aSize*1.35+live*uLevel*0.45)*uPixelRatio;',
-    '  gl_PointSize=(aSize*1.35+live*uLevel*0.45+glint*twinkle*2.8)*uPixelRatio;');
+    '  gl_PointSize=clamp(aSize*.95+live*uLevel*.15+glint*twinkle*.35,.65,1.50)*uPixelRatio;');
   source = replaceOnce(source,
     '  float rotationCos=cos(uRotation),rotationSin=sin(uRotation);',
     `  // Lift the glow above the vinyl and let individual points gently wander.
-  position.x+=.018*sin(uTime*.42+aPart*1.7)
-    +uPointMode*.025*sin(uTime*(.58+aSpeed*8.)+floatPhase);
-  position.y+=.085+.023*sin(uTime*.53+aPart*1.3)
-    +uPointMode*.040*sin(uTime*(.72+aSpeed*6.)+floatPhase*1.2);
+  position.x+=.012*sin(uTime*.32+aPart*1.7)
+    +uPointMode*.014*sin(uTime*(.40+aSpeed*8.)+floatPhase);
+  position.y+=.085+.015*sin(uTime*.38+aPart*1.3)
+    +uPointMode*.022*sin(uTime*(.48+aSpeed*6.)+floatPhase*1.2);
   float rotationCos=cos(uRotation),rotationSin=sin(uRotation);`);
   source = replaceOnce(source, 'u.uniform1f(v,N)', 'u.uniform1f(v,0)');
   source = replaceOnce(source, 'e.dataset.rotation=String(N)',
